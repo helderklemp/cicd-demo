@@ -28,11 +28,11 @@ pipeline {
                     }
                 }
                 stage('Integration Tests') {
-                    asteps {
+                    steps {
                         echo "On Branch B"
                     }
                 }
+            }
         }
     }
-}
 }
