@@ -4,16 +4,16 @@ pipeline {
         maven 'Maven' 
     }
     stages {
-        stage('Project Build') {
-            
-            steps {
-                sh 'mvn clean install -DskipTests'
+        stage('Commit Stage') {
+            stage('Project Build') {
+                steps {
+                    sh 'mvn clean install -DskipTests'
+                }
             }
-        }
-        stage(' Unit Tests') {
-            steps {
-                echo 'mvn test'
-           
+            stage(' Unit Tests') {
+                steps {
+                    echo 'mvn test'
+                }
             }
         }
         stage('Paralles Tests') {
@@ -32,6 +32,11 @@ pipeline {
                         echo "On Branch B"
                     }
                 }
+            }
+            stage('Build Image') {
+                    steps {
+                        echo "Build Dcker image"o
+                    }
             }
         }
     }
