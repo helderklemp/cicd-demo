@@ -5,14 +5,16 @@ pipeline {
     }
     stages {
         stage('Commit Stage') {
-            stage('Project Build') {
-                steps {
-                    sh 'mvn clean install -DskipTests'
+            stages {
+                stage('Project Build') {
+                    steps {
+                        sh 'mvn clean install -DskipTests'
+                    }
                 }
-            }
-            stage(' Unit Tests') {
-                steps {
-                    echo 'mvn test'
+                stage(' Unit Tests') {
+                    steps {
+                        echo 'mvn test'
+                    }
                 }
             }
         }
