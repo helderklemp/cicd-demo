@@ -13,7 +13,7 @@ pipeline {
                 }
                 stage(' Unit Tests') {
                     steps {
-                        echo 'mvn test'
+                        sh 'mvn test'
                     }
                 }
             //}
