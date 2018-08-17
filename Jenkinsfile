@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven' 
     }
     stages {
-        stage('Commit Stage') {
+        //stage('Commit Stage') {
             stages {
                 stage('Project Build') {
                     steps {
@@ -17,7 +17,7 @@ pipeline {
                     }
                 }
             }
-        }
+        //}
         stage('Paralles Tests') {
             when {
                 branch 'master'
