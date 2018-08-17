@@ -7,14 +7,31 @@ pipeline {
         stage('Project Build') {
             
             steps {
-                sh 'mvn -version'
+                sh 'mvn clean install -DskipTests'
             }
         }
-        stage('Example Test') {
+        stage(' Unit Tests') {
             steps {
-                echo 'Hello, JDK'
+                echo 'mvn test'
            
             }
+        }
+        stage('Paralles Tests') {
+            when {
+                branch 'master'
+            }
+            failFast true
+            parallel {
+                stage('Static Code Analysis') {
+                    steps {
+                        echo "On Branch A"
+                    }
+                }
+                stage('Integration Tests') {
+                    asteps {
+                        echo "On Branch B"
+                    }
+                }
         }
     }
 }
