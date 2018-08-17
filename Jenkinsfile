@@ -5,7 +5,7 @@ pipeline {
     }
     stages {
         //stage('Commit Stage') {
-            stages {
+            //stages {
                 stage('Project Build') {
                     steps {
                         sh 'mvn clean install -DskipTests'
@@ -16,7 +16,7 @@ pipeline {
                         echo 'mvn test'
                     }
                 }
-            }
+            //}
         //}
         stage('Paralles Tests') {
             when {
