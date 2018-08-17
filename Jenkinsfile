@@ -35,10 +35,10 @@ pipeline {
                     }
                 }
             }
-            stage('Build Image') {
-                    steps {
-                        echo "Build Dcker image"o
-                    }
+        }
+        stage('Build Image') {
+            steps {
+                echo "Build Dcker image"o
             }
         }
     }
