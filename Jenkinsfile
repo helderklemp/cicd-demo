@@ -1,10 +1,14 @@
 pipeline {
     agent any 
+    tools {
+        maven 'maven' 
+        docker 'docker'
+    }
     stages {
-        stage('Example Build') {
+        stage('Project Build') {
+            agent { docker 'maven:3-alpine' }
             steps {
-                echo 'Hello, Maven'
-
+                sh 'mvn -version'
             }
         }
         stage('Example Test') {
