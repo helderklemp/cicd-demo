@@ -4,10 +4,15 @@ pipeline {
         maven 'Maven' 
     }
     stages {
-        agent {docker 'maven:3-jdk-8-alpine'}
         stage('Project Build') {
             steps {
                 sh 'mvn clean install -DskipTests'
+            }
+        }
+        stage('Build Image') {
+            steps {
+                echo "Build Dcker image"
+                sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
             }
         }
         stage(' Unit Tests') {
@@ -36,6 +41,7 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Dcker image"
+                sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
             }
         }
     }
