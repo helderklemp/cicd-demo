@@ -14,9 +14,11 @@ spec:
     spec:
       containers:
       - name: cicd-demo-app
-        image: helderklemp/cicd-demo:21
+        image: helderklemp/cicd-demo
         ports:
         - containerPort: 8080
           name: server
         - containerPort: 8081
           name: management
+
+          

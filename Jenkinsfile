@@ -65,8 +65,7 @@ pipeline {
         }
         stage('Deploy to Dev') {
             steps {
-                echo "Deploying"
-
+                sh "kubectl -f config/deployment.yml apply"
             }
         }
     }
