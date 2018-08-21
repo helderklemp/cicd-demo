@@ -9,11 +9,12 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn clean install'
+                sh 'mvn clean install -DskipTests'
             }
         }
            
         stage('Paralles Tests') {
+            
             when {
                 branch 'master'
             }
