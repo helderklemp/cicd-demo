@@ -1,5 +1,5 @@
 pipeline {
-   agent none
+   agent any
    stages {
         stage('Project Build') {
             agent {
@@ -13,7 +13,6 @@ pipeline {
             }
         }
         stage('Build Image2') {
-            agent any
             steps {
                 //def customImage = docker.biuld("my-image")
                 echo "Build Dcker image"
