@@ -44,7 +44,7 @@ pipeline {
             steps {
                 echo "Build Dcker image"
                 script{
-                    dockerImage = docker.build registry + "${BUILD_NUMBER}"
+                    dockerImage = docker.build registry + ":${BUILD_NUMBER}"
                 }
                 
             }
