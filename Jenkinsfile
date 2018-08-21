@@ -10,19 +10,11 @@ pipeline {
             }
             steps {
                 sh 'mvn clean install -DskipTests'
-            }
-            steps {
                 sh 'mvn test'
             }
         }
            
         stage('Paralles Tests') {
-            agent {
-               docker {
-                    image 'maven:3-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
             when {
                 branch 'master'
             }
@@ -40,7 +32,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Image2') {
+        stage('Build Image') {
             steps {
                 echo "Build Dcker image"
                 sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
