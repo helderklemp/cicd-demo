@@ -9,8 +9,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'mvn clean install -DskipTests'
-                sh 'mvn test'
+                sh 'mvn clean install'
             }
         }
            
