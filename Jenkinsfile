@@ -15,7 +15,7 @@ pipeline {
         stage('Build Image2') {
             agent any
             steps {
-                def customImage = docker.biuld("my-image")
+                //def customImage = docker.biuld("my-image")
                 echo "Build Dcker image"
                 sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
             }
