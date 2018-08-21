@@ -4,20 +4,17 @@ pipeline {
         maven 'Maven' 
     }
     stages {
-        //stage('Commit Stage') {
-            //stages {
-                stage('Project Build') {
-                    steps {
-                        sh 'mvn clean install -DskipTests'
-                    }
-                }
-                stage(' Unit Tests') {
-                    steps {
-                        sh 'mvn test'
-                    }
-                }
-            //}
-        //}
+        agent {docker 'maven:3-jdk-8-alpine'}
+        stage('Project Build') {
+            steps {
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+        stage(' Unit Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }   
         stage('Paralles Tests') {
             when {
                 branch 'master'
