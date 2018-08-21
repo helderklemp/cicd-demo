@@ -53,7 +53,7 @@ pipeline {
         }
         stage('Push Image') {
             steps {
-                echo "Pushing image to DockerHUb"
+                echo "Pushing image to DockerHub"
                 script{
                     docker.withRegistry ('', registryCredential){
                         dockerImage.push()
@@ -65,7 +65,7 @@ pipeline {
         }
         stage('Deploy to Dev') {
             steps {
-                sh "kubectl -f config/deployment.yml apply"
+                sh "kubectl -f k8s/deployment.yml apply"
             }
         }
     }
