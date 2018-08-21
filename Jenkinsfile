@@ -4,17 +4,20 @@ pipeline {
        registryCredential = "dockerhub"
        dockerImage = ''
    }
+   tools{
+       maven 'Maven'
+   }
    agent any
    stages {
         stage('Project Build') {
-            agent {
-               docker {
-                    image 'maven:3-alpine'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
+            // agent {
+            //    docker {
+            //         image 'maven:3-alpine'
+            //         args '-v $HOME/.m2:/root/.m2'
+            //     }
+            // }
             steps {
-                sh 'mvn clean install -DskipTests'
+                sh 'mvn clean install'
             }
         }
            
@@ -40,7 +43,6 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Dcker image"
-                //sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
                 script{
                     dockerImage = docker.build registry + ":BUILD_NUMBER"
                 }
