@@ -6,11 +6,13 @@ pipeline {
     stages {
         stage('Project Build') {
             steps {
-                sh 'mvn clean install -DskipTests'
+                //sh 'mvn clean install -DskipTests'
+                echo "helo "
             }
         }
         stage('Build Image2') {
             steps {
+                def customImage = docker.biuld("my-image")
                 echo "Build Dcker image"
                 sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
             }
