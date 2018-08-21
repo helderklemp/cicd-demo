@@ -3,6 +3,7 @@ pipeline {
        registry = "helderklemp/cicd-demo"
        registryCredential = "dockerhub"
        dockerImage = ''
+       dockerImageLts = ''
    }
    tools{
        maven 'Maven'
@@ -45,6 +46,7 @@ pipeline {
                 echo "Build Dcker image"
                 script{
                     dockerImage = docker.build registry + ":${BUILD_NUMBER}"
+                    dockerImageLts = docker.build registry + ":${BUILD_NUMBER}"
                 }
                 
             }
@@ -55,6 +57,7 @@ pipeline {
                 script{
                     docker.withRegistry ('', registryCredential){
                         dockerImage.push()
+                        dockerImageLts.push()
                     }
                      
                 }
