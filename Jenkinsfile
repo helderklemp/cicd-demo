@@ -1,4 +1,9 @@
 pipeline {
+   environment{
+       registry = "helderklemp/cicd-demo"
+       registryCredential = "dockerhub"
+       dockerImage = ''
+   }
    agent any
    stages {
         stage('Project Build') {
@@ -35,7 +40,22 @@ pipeline {
         stage('Build Image') {
             steps {
                 echo "Build Dcker image"
-                sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
+                //sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
+                script{
+                    dockerImage = docker.build registry + ":BUILD_NUMBER"
+                }
+                
+            }
+        }
+        stage('Push Image') {
+            steps {
+                echo "Pushing image to DockerHUb"
+                script{
+                    docker.withRegistry ('', registryCredential){
+                        dockerImage.push()
+                    }
+                     
+                }
             }
         }
         stage('Deploy to Dev') {
