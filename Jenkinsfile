@@ -9,7 +9,7 @@ pipeline {
                 sh 'mvn clean install -DskipTests'
             }
         }
-        stage('Build Image') {
+        stage('Build Image2') {
             steps {
                 echo "Build Dcker image"
                 sh 'docker build --build-arg JAR_FILE=target/cicd-demo-0.0.1-SNAPSHOT.jar -t helderklemp/cicd-demo .'
