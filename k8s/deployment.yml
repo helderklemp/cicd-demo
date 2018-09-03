@@ -7,14 +7,14 @@ spec:
     matchLabels:
       app: ${APP_NAME}-app
   replicas: ${APP_REPLICA_COUNT} # tells deployment to run 2 pods matching the template
-  template: # create pods using pod definition in this template
+  template: 
     metadata:
       labels:
         app: ${APP_NAME}-app
     spec:
       containers:
       - name: ${APP_NAME}-app
-        image: ${IMAGE_NAME}:${IMAGE_TAG}
+        image: ${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
         ports:
         - containerPort: 8080
           name: server
