@@ -12,7 +12,9 @@ pipeline {
    stages {
         stage('K8s Login') {
             steps {
-                helloWorld("Heyyyy")
+                sh "cat k8s/deployment.yml"
+                kubeSubst('IMAGE_TAG', '88c2058f564', 'k8s/deployment.yml')
+                sh "cat k8s/deployment.yml"
             }
         }
         stage('Project Build') {
@@ -70,9 +72,6 @@ pipeline {
     }
     
 }
-def helloWorld(param){
-        sh "echo $param"
-    }
 def kubeSubst(placeholder, value, file) {
   sh "sed -i.bak s/:\\\${$placeholder}/:$value/g $file.yml"
 }

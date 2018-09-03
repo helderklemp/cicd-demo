@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cicd-demo-app
-        image: helderklemp/cicd-demo
+        image: helderklemp/cicd-demo:${IMAGE_TAG}
         ports:
         - containerPort: 8080
           name: server
