@@ -12,7 +12,7 @@ pipeline {
    stages {
         stage('K8s Login') {
             steps {
-                helloWorld()
+                helloWorld("Heyyyy")
             }
         }
         stage('Project Build') {
@@ -68,11 +68,11 @@ pipeline {
             }
         }
     }
-    def helloWorld(param){
+    
+}
+def helloWorld(param){
         sh "echo $param"
     }
-}
-
 def kubeSubst(placeholder, value, file) {
   sh "sed -i.bak s/:\\\${$placeholder}/:$value/g $file.yml"
 }
