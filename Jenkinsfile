@@ -10,6 +10,11 @@ pipeline {
    }
    agent any
    stages {
+        stage('K8s Login') {
+            steps {
+                helloWorld()
+            }
+        }
         stage('Project Build') {
             steps {
                 sh 'mvn clean install'
@@ -63,4 +68,10 @@ pipeline {
             }
         }
     }
+}
+def helloWorld(param){
+    sh "echo $param"
+}
+def kubeSubst(placeholder, value, file) {
+  sh "sed -i.bak s/:\\\${$placeholder}/:$value/g $file.yml"
 }
