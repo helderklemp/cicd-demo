@@ -14,7 +14,7 @@ pipeline {
             steps {
                 sh "cat k8s/deployment.yml"
                 kubeSubst('IMAGE_TAG', 'latest', 'k8s/deployment.yml')
-                kubeSubst('IMAGE_NAME', 'helderklemp/cicd-demo', 'k8s/deployment.yml')
+                kubeSubst('IMAGE_NAME', 'cicd-demo', 'k8s/deployment.yml')
                 kubeSubst('IMAGE_REGISTRY', 'helderklemp', 'k8s/deployment.yml')
                 kubeSubst('APP_REPLICA_COUNT', '1', 'k8s/deployment.yml')
                 kubeSubst('APP_NAME', 'cicd-demo', 'k8s/deployment.yml')
