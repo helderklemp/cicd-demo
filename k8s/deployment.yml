@@ -1,24 +1,49 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${APP_NAME}-deployment
+  name: cicd-demo-deployment
 spec:
   selector:
     matchLabels:
-      app: ${APP_NAME}-app
-  replicas: ${APP_REPLICA_COUNT} # tells deployment to run 2 pods matching the template
-  template: 
+      app: cicd-demo-app
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
     metadata:
       labels:
-        app: ${APP_NAME}-app
+        app: cicd-demo-app
     spec:
       containers:
-      - name: ${APP_NAME}-app
-        image: ${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: cicd-demo-app
+        image: helderklemp/cicd-demo:latest
         ports:
         - containerPort: 8080
           name: server
         - containerPort: 8081
           name: management
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+        readinessProbe:
+          initialDelaySeconds: 10
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          
+        
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: cicd-demo-service
+spec:
+  type: LoadBalance
+  selector:
+    app: cicd-demo-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
 
           
