@@ -68,10 +68,11 @@ pipeline {
             }
         }
     }
+    def helloWorld(param){
+        sh "echo $param"
+    }
 }
-def helloWorld(param){
-    sh "echo $param"
-}
+
 def kubeSubst(placeholder, value, file) {
   sh "sed -i.bak s/:\\\${$placeholder}/:$value/g $file.yml"
 }
