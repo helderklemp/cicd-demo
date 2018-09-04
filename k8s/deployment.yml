@@ -38,7 +38,7 @@ apiVersion: v1
 metadata:
   name: cicd-demo-service
 spec:
-  type: LoadBalance
+  type: LoadBalancer
   selector:
     app: cicd-demo-app
   ports:
