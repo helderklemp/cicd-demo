@@ -5,9 +5,6 @@ pipeline {
        dockerImage = ''
        dockerImageLts = ''
    }
-   tools{
-       maven 'Maven'
-   }
    agent any
    stages {
         stage('K8s Login') {
