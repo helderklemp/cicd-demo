@@ -3,22 +3,17 @@ pipeline {
        registry = "helderklemp/cicd-demo"
        registryCredential = "dockerhub"
        dockerImage = ''
-       dockerImageLts = ''
    }
    agent any
-   triggers { upstream(upstreamProjects: 'docker-java-base/master', threshold: hudson.model.Result.SUCCESS) }
+   tools { 
+        maven 'Maven' 
+    }
    stages {
-        stage('K8s Login') {
-            steps {
-                sh "cat k8s/deployment.yml"             
-            }
-        }
         stage('Project Build') {
             steps {
                 sh 'mvn clean install'
             }
-        }
-           
+        }   
         stage('Paralles Tests') {
             
             when {
@@ -43,7 +38,6 @@ pipeline {
                 echo "Build Dcker image"
                 script{
                     dockerImage = docker.build registry + ":${BUILD_NUMBER}"
-                    dockerImageLts = docker.build registry + ":latest"
                 }
                 
             }
@@ -54,20 +48,17 @@ pipeline {
                 script{
                     docker.withRegistry ('', registryCredential){
                         dockerImage.push()
-                        dockerImageLts.push()
+                        dockerImage.push("latest")
                     }
                      
                 }
             }
         }
-        stage('Deploy to Dev') {
-            steps {
-                sh "kubectl -f k8s/deployment.yml apply"
-            }
-        }
+        // stage('Deploy to Dev') {
+        //     steps {
+        //         sh "kubectl -f k8s/deployment.yml apply"
+        //     }
+        // }
     }
     
-}
-def kubeSubst(placeholder, value, file) {
-  sh "sed -i.bak s/:\\\${$placeholder}/:$value/g $file"
 }
