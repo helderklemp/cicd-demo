@@ -5,10 +5,8 @@ pipeline {
        dockerImage = ''
        dockerImageLts = ''
    }
-   tools{
-       maven 'Maven'
-   }
    agent any
+   triggers { upstream(upstreamProjects: 'docker-java-base/master', threshold: hudson.model.Result.SUCCESS) }
    stages {
         stage('K8s Login') {
             steps {
