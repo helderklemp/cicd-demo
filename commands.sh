@@ -18,9 +18,12 @@ watch -n1 kubectl get pods
 kubectl scale cicd-demo-deployment --replicas=3
 
 #window 2
-while true ; do curl -s 192.168.99.100:30506/ | jq ".hostname" ; done
+kubectl get events --watch
 
 #window 3
+while true ; do curl -s 192.168.99.100:30373/ | jq ".hostname" ; done
+
+#window 4
 kubectl scale deployment cicd-demo-deployment --replicas=2
 kubectl set image  deployment/cicd-demo-deployment cicd-demo-app=helderklemp/cicd-demo:42
 kubectl rollout undo deployment cicd-demo-deployment
