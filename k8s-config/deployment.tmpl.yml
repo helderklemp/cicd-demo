@@ -1,0 +1,74 @@
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: $APP_NAME-deployment-$FEATURE_NAME
+  labels: &labels  # YAML anchor, helps with repetition
+    name: "$APP_NAME-app-$FEATURE_NAME"
+    branch: $FEATURE_NAME
+    environment: "$ENV"
+    application: "$APP_NAME"    
+spec:
+  selector:
+    matchLabels:
+      name: $APP_NAME-app-$FEATURE_NAME
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  progressDeadlineSeconds: 300  # 5 minute timeout
+  template: # create pods using pod definition in this template
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: $APP_NAME-app-$FEATURE_NAME
+          image: helderklemp/$APP_NAME:$BUILD_VERSION
+          ports:
+            - containerPort: 8080
+              name: server
+          resources:
+            requests:
+              cpu: "512m"
+            limits:
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          readinessProbe:
+            initialDelaySeconds: 30
+            httpGet:
+              path: /actuator/health
+              port: 8080
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: $APP_NAME-service-$FEATURE_NAME
+  labels:  # can't use anchors across YAML documents unfortunately
+    name: "$APP_NAME"
+    branch: $FEATURE_NAME
+    environment: "$ENV"
+    application: "$APP_NAME"
+spec:
+  selector:
+    name: $APP_NAME-app-$FEATURE_NAME
+  ports:
+    - port: 80
+      targetPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: $APP_NAME-ingress-$FEATURE_NAME
+  labels:  # can't use anchors across YAML documents unfortunately
+    name: "$APP_NAME"
+    branch: $FEATURE_NAME
+    environment: "$ENV"
+    application: "$APP_NAME"
+spec:
+  rules:
+    - host: "$APP_DNS"
+      http:
+        paths:
+          - backend:
+              serviceName: $APP_NAME-service-$FEATURE_NAME
+              servicePort: 80

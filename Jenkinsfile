@@ -1,64 +1,93 @@
+#!/usr/bin/env groovy
+
 pipeline {
-   environment{
-       registry = "helderklemp/cicd-demo"
-       registryCredential = "dockerhub"
-       dockerImage = ''
-   }
-   agent any
-   tools { 
-        maven 'Maven' 
+    environment{
+       FEATURE_NAME = BRANCH_NAME.replaceAll('[\\(\\)_/]','-').toLowerCase()
+       REGISTRY_PASSWORD = credentials('REGISTRY_PASSWORD')
+       REGISTRY_USERNAME = credentials('REGISTRY_USERNAME')
+       POSTGRES_PASSWORD = credentials('POSTGRES_PASSWORD')
+       APP_NAME = "cicd-demo"
     }
-   stages {
-        stage('Project Build') {
+    agent any 
+    stages {
+        stage('Docker Build & Push') {
             steps {
-                sh 'mvn clean install'
+                sh "make dockerLogin build dockerBuild dockerPush"
             }
-        }   
-        stage('Paralles Tests') {
-            
-            when {
-                branch 'master'
+
+        }
+		// not in parallel due to race condition with .env
+        stage('Docker Scan') {
+            steps {
+                sh "make dockerScan"
             }
-            failFast true
-            parallel {
+            post {
+                cleanup {
+                    sh "docker-compose down -v"
+                }
+            }
+        }
+        
+        stage('Parallel Tests') {
+            failFast true            
+            parallel {                  
                 stage('Static Code Analysis') {
+                    when {
+                        anyOf { branch 'master'; branch 'release'}
+                    }    
                     steps {
-                        echo "On Branch A"
+                        sh "make publishSonar"                        
                     }
                 }
                 stage('Integration Tests') {
                     steps {
-                        echo "On Branch B"
+                        sh "make integrationTest"
                     }
                 }
             }
         }
-        stage('Build Image') {
+        stage('Push Latest Tag') {
+            when { branch 'master' }
             steps {
-                echo "Build Dcker image"
-                script{
-                    dockerImage = docker.build registry + ":${BUILD_NUMBER}"
-                }
-                
+                sh "make dockerPushLatest"
             }
         }
-        stage('Push Image') {
+
+        stage('Deploy To dev') {
+            environment { 
+                ENV = "dev"
+                APP_DNS = util.selectAppUrl(ENV, FEATURE_NAME, APP_NAME)
+                KUBE_SERVER = credentials("KUBE_API_SERVER")
+                KUBE_TOKEN = credentials("KUBE_DEV_TOKEN")
+            }
             steps {
-                echo "Pushing image to DockerHub"
-                script{
-                    docker.withRegistry ('', registryCredential){
-                        dockerImage.push()
-                        dockerImage.push("latest")
-                    }
-                     
-                }
+                sh "make kubeLogin deploy"
             }
         }
-        // stage('Deploy to Dev') {
-        //     steps {
-        //         sh "kubectl -f k8s/deployment.yml apply"
-        //     }
-        // }
+        
+        stage('Deploy To qa') {
+            when { expression { BRANCH_NAME ==~ /(master|release-[0-9]+$)/ }} // Only Master and Release branches 
+            environment { 
+                ENV = "qa"
+                APP_DNS = util.selectAppUrl(ENV, FEATURE_NAME, APP_NAME)
+                KUBE_SERVER = credentials("KUBE_API_SERVER")
+                KUBE_TOKEN = credentials("KUBE_QA_TOKEN")
+            }
+            steps {
+                sh "make kubeLogin deploy"
+            }
+        }
+        
     }
-    
+    post {
+        always {
+            script {
+                if(BRANCH_NAME ==~ /(master|release-[0-9]+$)/ ){
+                     util.notifySlack(currentBuild.result)
+                 }
+            }
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            junit 'target/surefire-reports/*.xml'
+        }
+    }
 }

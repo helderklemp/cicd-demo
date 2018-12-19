@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 public class ApiController {
 
     @RequestMapping("/")
-    public EnvDetail greeting() throws UnknownHostException {
+    public EnvDetail home() throws UnknownHostException {
         EnvDetail env=new EnvDetail();
         InetAddress inetAddress = InetAddress.getLocalHost();
         env.setHostname(inetAddress.getHostName());
