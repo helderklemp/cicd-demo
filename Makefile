@@ -21,7 +21,7 @@ APP_URL ?= https://${APP_DNS}
 ##################
 build: $(IS_ENV_CLEAN_REQUIRED) .env
 	@docker-compose down -v
-	docker-compose run --rm builder mvn clean package -B -Dgroups=UnitTest 
+	docker-compose run --rm builder mvn clean package -DskipTests
 
 publishSonar: .env
 	docker-compose run --rm builder mvn sonar:sonar -Dsonar.login="$(SONAR_AUTH)"

@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   kubectl:
-    image: helderklemp/kubernetes-utils:1.10.3
+    image: cmdsolutions/cmdline_kube:13195
     env_file: .env
     volumes:
       - .:/srv/app:Z
@@ -9,40 +9,25 @@ services:
     working_dir: /srv/app
 
   builder:
-    image: helderklemp/java-base-builder:latest
+    image: maven:3.6.0-jdk-10-slim
     env_file: .env
     volumes:
       - .:/srv/app:Z
       - ~/.m2:/root/.m2:Z
     working_dir: /srv/app
-
-  soapui:
-    image: helderklemp/soapui:5.4.0
-    volumes:
-      - .:/srv/app:Z
-
-  selenium-runner:
-    image: helderklemp/java-base-builder:latest
-    env_file: .env
-    volumes:
-      - .:/srv/app:Z
-      - ~/.m2:/root/.m2:Z
-    working_dir: /srv/app
-    depends_on:
-      - selenium
 
   selenium:
     image: selenium/standalone-chrome
 
-  postgres:
-    image:  helderklemp/arminc/clair-db:latest
-    env_file: .env
+  # postgres:
+  #   image:  helderklemp/arminc/clair-db:latest
+  #   env_file: .env
       
-  clair:
-    image: helderklemp/arminc/clair-local-scan:v2.0.6
-    entrypoint: ["/wait-for-it.sh", "postgres:5432", "--"]
-    command: ["/clair", "-config=/config/config.yaml"]
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:Z
-    depends_on:
-      - postgres  
+  # clair:
+  #   image: helderklemp/arminc/clair-local-scan:v2.0.6
+  #   entrypoint: ["/wait-for-it.sh", "postgres:5432", "--"]
+  #   command: ["/clair", "-config=/config/config.yaml"]
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:Z
+  #   depends_on:
+  #     - postgres  
