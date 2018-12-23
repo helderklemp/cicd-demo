@@ -1,14 +1,17 @@
 
-This project aims to be the basic skeleton to apply continuous integration and continuous delivery to Equifax.
+# CICD-DEMO
 
-## Topology 
+This project aims to be the basic skeleton to apply continuous integration and continuous delivery.
+
+## Topology
 
 CICD Demo uses some kubernetes primitives to deploy:
+
 * Deployment
-* Services 
+* Services
 * Ingress ( with TLS )
 
-   ```
+```bash
      internet
         |
    [ Ingress ]
@@ -17,37 +20,29 @@ CICD Demo uses some kubernetes primitives to deploy:
    --|-----|--
    [   Pods   ]
 
-   ```
+```
 
 This project includes:
 
-* Spring Boot java app 
+* Spring Boot java app
 * Jenkinsfile integration to run pipelines
-* Dockerfile containing the base image to run java apps in Equifax
+* Dockerfile containing the base image to run java apps
 * Makefile and docker-compose to make the pipeline steps much simpler
 * Kubernetes deployment file demonstrating how to deploy this app in a simple Kubernetes cluster
 
-
-
 ## Pipeline Setup
 
-Pipelines exist at http://jenkins.anzcd.internal.
+Pipelines exist at Travis.
 
-Some pipelines are configured by **Bitbucket Team/Project**. If you have created a repository in one of these, your project will be **automatically** built if it has a Jenkinsfile (if not, hit the `Scan Organization Folder Now` button).
+Some pipelines are configured by **GitHub/Projects**. If you have created a repository in one of these, your project will be **automatically** built if it has a Jenkinsfile/Travis/Gitlab/CircleCI.
 
 Other pipelines are configured manually under folders. You can create a project manually with the following steps:
 
-  * New Item
-  * `item name`: repository name
-  * Multibranch Pipeline
-  * Branch Sources -> Add source -> Bitbucket
-    * Server: `EFX Bitbucket (https://bitbucket.corp.dmz)`
-    * Choose appropriate credentials
-    * Owner: the Bitbucket Team/Project your repository exists under
-    * Pick your repository from the dropdown.
-  * All other configuration is default.
-
 How to run the app:
+
+```make
+make
+```
 
 ## Testing
 
@@ -62,6 +57,7 @@ mvn test -Dgroups=UnitTest
 ```
 
 Or using Docker:
+
 ```bash
 make build
 ```
@@ -73,6 +69,7 @@ mvn integration-test -Dgroups=IntegrationTests
 ```
 
 Or using Docker:
+
 ```bash
 make integrationTest
 ```
@@ -84,10 +81,9 @@ System tests run with Selenium using docker-compose to run a [Selenium standalon
 [Selenium standalone container]: https://github.com/SeleniumHQ/docker-selenium
 
 Using Docker:
-  * If you are running locally, make sure the `$APP_URL` is populated and points to a valid instance of your application. This variable is populated automatically in Jenkins.
+
+* If you are running locally, make sure the `$APP_URL` is populated and points to a valid instance of your application. This variable is populated automatically in Jenkins.
+
 ```bash
 APP_URL=http://dev-cicd-demo-master.anzcd.internal/ make systemTest
 ```
-
-
-
