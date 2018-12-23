@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+  kubectl:
+    image: cmdsolutions/cmdline_kube:13195
+    env_file: .env
+    volumes:
+      - .:/srv/app:Z
+      - ~/.kube:/root/.kube:Z
+    working_dir: /srv/app
+
+  builder:
+    image: maven:3.6.0-jdk-10-slim
+    env_file: .env
+    volumes:
+      - .:/srv/app:Z
+      - ~/.m2:/root/.m2:Z
+    working_dir: /srv/app
+
+  selenium:
+    image: selenium/standalone-chrome
+
+  # postgres:
+  #   image:  helderklemp/arminc/clair-db:latest
+  #   env_file: .env
+      
+  # clair:
+  #   image: helderklemp/arminc/clair-local-scan:v2.0.6
+  #   entrypoint: ["/wait-for-it.sh", "postgres:5432", "--"]
+  #   command: ["/clair", "-config=/config/config.yaml"]
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:Z
+  #   depends_on:
+  #     - postgres  
